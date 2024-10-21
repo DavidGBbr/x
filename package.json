@@ -1,0 +1,23 @@
+{
+  "name": "clone-twitter",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "dev": "node --import=tsx --watch --env-file=.env ./src/server.ts"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "@types/cors": "^2.8.17",
+    "@types/express": "^5.0.0",
+    "@types/node": "^22.7.7",
+    "cors": "^2.8.5",
+    "express": "^4.21.1",
+    "helmet": "^8.0.0"
+  },
+  "devDependencies": {
+    "tsx": "^4.19.1"
+  }
+}
