@@ -12,3 +12,30 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+model User {
+  slug String @id
+  email String @unique
+  password String
+  name String
+  avatar String @default("default.jpg")
+  cover String @default("default.jpg")
+  bio String?
+  link String?
+}
+
+model Tweet {
+  id Int @id @default(autoincrement())
+  userSlug String
+  body String
+  image String?
+  createdAt DateTime @default(now())
+  answerOf Int @default(0)
+}
+
+
+model TweetLike {
+  id Int @id @default(autoincrement())
+  userSlug String
+  tweetId Int
+}
