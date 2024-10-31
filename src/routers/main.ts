@@ -8,7 +8,7 @@ mainRouter.get("/ping", pingController.ping);
 // mainRouter.get("/privateping");
 
 mainRouter.post("/auth/signup", AuthController.signup);
-// mainRouter.post("/auth/signin");
+mainRouter.post("/auth/signin", AuthController.signin);
 
 // mainRouter.post("/tweet");
 // mainRouter.get("/tweet/:id");

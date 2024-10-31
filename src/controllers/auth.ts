@@ -2,8 +2,9 @@ import { RequestHandler } from "express";
 import { signupSchema } from "../schemas/signup";
 import { createUser, findUserByEmail, findUserBySlug } from "../services/user";
 import slug from "slug";
-import { hash } from "bcrypt-ts";
+import { compare, hash } from "bcrypt-ts";
 import { createJWT } from "../utils/jwt";
+import { signinSchema } from "../schemas/signin";
 
 export const signup: RequestHandler = async (req, res) => {
   const safeData = signupSchema.safeParse(req.body);
@@ -23,7 +24,7 @@ export const signup: RequestHandler = async (req, res) => {
   while (genSlug) {
     const hasSlug = await findUserBySlug(userSlug);
     if (hasSlug) {
-      let slugSuffix = Math.floor(Math.random() * 999999).toString();
+      const slugSuffix = Math.floor(Math.random() * 999999).toString();
       userSlug = slug(safeData.data.name + slugSuffix);
     } else {
       genSlug = false;
@@ -49,4 +50,28 @@ export const signup: RequestHandler = async (req, res) => {
       avatar: newUser.avatar,
     },
   });
+};
+
+export const signin: RequestHandler = async (req, res) => {
+  const safeData = signinSchema.safeParse(req.body);
+  if (!safeData.success) {
+    res.json({ error: safeData.error.flatten().fieldErrors });
+    return;
+  }
+
+  const user = await findUserByEmail(safeData.data.email);
+  if (!user) {
+    res.status(401).json({ error: "Acesso negado" });
+    return;
+  }
+
+  const verifyPass = await compare(safeData.data.password, user.password);
+  if (!verifyPass) {
+    res.status(401).json({ error: "Acesso negado" });
+    return;
+  }
+
+  const token = createJWT(user.slug);
+
+  res.json({ token, user: { name: user.name, slug: user.slug } });
 };
