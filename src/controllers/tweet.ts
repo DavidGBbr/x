@@ -2,18 +2,19 @@ import { Response } from "express";
 import { ExtendedRequest } from "../types/extended-request";
 import { addTweetSchema } from "../schemas/add-tweet";
 import { createTweet, findTweet } from "../services/tweet";
+import { addHashtag } from "../services/trend";
 
 export const addTweet = async (req: ExtendedRequest, res: Response) => {
   const safeData = addTweetSchema.safeParse(req.body);
   if (!safeData.success) {
-    res.json({ error: safeData.error.flatten().fieldErrors });
+    res.status(400).json({ error: safeData.error.flatten().fieldErrors });
     return;
   }
 
-  if (safeData.data.asnwer) {
-    const hasAnswerTweet = await findTweet(parseInt(safeData.data.asnwer));
+  if (safeData.data.answer) {
+    const hasAnswerTweet = await findTweet(parseInt(safeData.data.answer));
     if (!hasAnswerTweet) {
-      res.json({ error: "Tweet de resposta não encontrado" });
+      res.status(404).json({ error: "Tweet de resposta não encontrado" });
       return;
     }
   }
@@ -21,8 +22,15 @@ export const addTweet = async (req: ExtendedRequest, res: Response) => {
   const newTweet = await createTweet(
     req.userSlug as string,
     safeData.data.body,
-    safeData.data.asnwer ? parseInt(safeData.data.asnwer) : 0
+    safeData.data.answer ? parseInt(safeData.data.answer) : 0
   );
 
-  res.json({ tweet: newTweet });
+  const hashtags = safeData.data.body.match(/#[a-zA-Z0-9_]+/g);
+  if (hashtags) {
+    for (const hashtag of hashtags) {
+      await addHashtag(hashtag);
+    }
+  }
+
+  res.status(201).json({ tweet: newTweet });
 };
