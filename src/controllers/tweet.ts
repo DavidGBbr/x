@@ -1,7 +1,11 @@
 import { Response } from "express";
 import { ExtendedRequest } from "../types/extended-request";
 import { addTweetSchema } from "../schemas/add-tweet";
-import { createTweet, findTweet } from "../services/tweet";
+import {
+  createTweet,
+  findAnswersFromTweet,
+  findTweet,
+} from "../services/tweet";
 import { addHashtag } from "../services/trend";
 
 export const addTweet = async (req: ExtendedRequest, res: Response) => {
@@ -45,4 +49,12 @@ export const getTweet = async (req: ExtendedRequest, res: Response) => {
   }
 
   res.json({ tweet });
+};
+
+export const getAnswers = async (req: ExtendedRequest, res: Response) => {
+  const { id } = req.params;
+
+  const answers = await findAnswersFromTweet(parseInt(id));
+
+  res.json({ answers });
 };
