@@ -21,7 +21,7 @@ mainRouter.post("/tweet/:id/like", verifyJWT, TweetController.likeToggle);
 mainRouter.get("/user/:slug", verifyJWT, UserController.getUser);
 mainRouter.get("/user/:slug/tweets", verifyJWT, UserController.getUserTweets);
 mainRouter.post("/user/:slug/follow", verifyJWT, UserController.followToggle);
-// mainRouter.put("/user");
+mainRouter.put("/user", verifyJWT, UserController.updateUser);
 // mainRouter.put("/user/avatar");
 // mainRouter.put("/user/cover");
 
