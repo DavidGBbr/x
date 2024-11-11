@@ -113,3 +113,41 @@ export const findTweetsByUser = async (
 
   return tweets;
 };
+
+export const findTweetFeed = async (
+  following: string[],
+  currentPage: number,
+  perPage: number
+) => {
+  const tweets = await prisma.tweet.findMany({
+    where: {
+      userSlug: { in: following },
+      answerOf: 0,
+    },
+    orderBy: { createdAt: "desc" },
+    skip: currentPage * perPage,
+    take: perPage,
+    include: {
+      user: {
+        select: {
+          name: true,
+          avatar: true,
+          slug: true,
+        },
+      },
+      likes: {
+        select: {
+          userSlug: true,
+        },
+      },
+    },
+  });
+
+  for (let tweetIndex in tweets) {
+    tweets[tweetIndex].user.avatar = getPublicURL(
+      tweets[tweetIndex].user.avatar
+    );
+  }
+
+  return tweets;
+};

@@ -3,6 +3,7 @@ import * as pingController from "../controllers/ping";
 import * as AuthController from "../controllers/auth";
 import * as TweetController from "../controllers/tweet";
 import * as UserController from "../controllers/user";
+import * as FeedController from "../controllers/feed";
 import { verifyJWT } from "../utils/jwt";
 
 export const mainRouter = Router();
@@ -25,7 +26,7 @@ mainRouter.put("/user", verifyJWT, UserController.updateUser);
 // mainRouter.put("/user/avatar");
 // mainRouter.put("/user/cover");
 
-// mainRouter.get("/feed");
+mainRouter.get("/feed", verifyJWT, FeedController.getFeed);
 // mainRouter.get("/search");
 // mainRouter.get("/trending");
 // mainRouter.get("/suggestions");
