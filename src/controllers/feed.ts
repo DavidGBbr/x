@@ -5,7 +5,7 @@ import { getUserFollowing } from "../services/user";
 import { findTweetFeed } from "../services/tweet";
 
 export const getFeed = async (req: ExtendedRequest, res: Response) => {
-  const safeData = feedSchema.safeParse(req.body);
+  const safeData = feedSchema.safeParse(req.query);
   if (!safeData.success) {
     res.json({ error: safeData.error.flatten().fieldErrors });
     return;
