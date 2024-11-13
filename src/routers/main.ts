@@ -4,6 +4,7 @@ import * as AuthController from "../controllers/auth";
 import * as TweetController from "../controllers/tweet";
 import * as UserController from "../controllers/user";
 import * as FeedController from "../controllers/feed";
+import * as TrendController from "../controllers/trend";
 import * as SearchController from "../controllers/search";
 import { verifyJWT } from "../utils/jwt";
 
@@ -29,5 +30,5 @@ mainRouter.put("/user", verifyJWT, UserController.updateUser);
 
 mainRouter.get("/feed", verifyJWT, FeedController.getFeed);
 mainRouter.get("/search", verifyJWT, SearchController.searchTweets);
-// mainRouter.get("/trending");
+mainRouter.get("/trending", verifyJWT, TrendController.getTrends);
 // mainRouter.get("/suggestions");
