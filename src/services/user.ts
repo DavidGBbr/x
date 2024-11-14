@@ -116,3 +116,30 @@ export const getUserFollowing = async (slug: string) => {
 
   return following;
 };
+
+export const getUserSuggestions = async (slug: string) => {
+  const following = await getUserFollowing(slug);
+
+  const followingPlusMe = [...following, slug];
+
+  type Suggestions = Pick<
+    Prisma.UserGetPayload<Prisma.UserDefaultArgs>,
+    "name" | "avatar" | "slug"
+  >;
+
+  const suggestions: Suggestions[] = await prisma.$queryRaw`
+    SELECT
+      name, avatar, slug
+    FROM "User"
+    WHERE
+      slug NOT IN (${followingPlusMe.join(",")})
+    ORDER BY RANDOM()
+    LIMIT 2  
+  `;
+
+  for (let sugIndex in suggestions) {
+    suggestions[sugIndex].avatar = getPublicURL(suggestions[sugIndex].avatar);
+  }
+
+  return suggestions;
+};
